@@ -4,7 +4,7 @@ from torchvision import transforms
 from torch.utils.data import DataLoader, Dataset
 import torch.nn.functional as F
 import numpy as np
-
+from PDBF import graypdbfs
 IMG_EXTENSIONS = ('.npy',)
 
 def make_dataset(path):
@@ -59,10 +59,16 @@ def build_dataloader_CY101(opt):
         im = im[:, :width, :width]
         return im
 
+    def pdbf(x):
+        x= np.array(x)
+        return x
+
+
     image_transform = transforms.Compose([
         transforms.Lambda(crop),
         transforms.ToPILImage(),
         transforms.Resize((opt.height, opt.width)),
+        transforms.Lambda(lambda x: graypdbfs(x, nbitplanes=[2,3,4,5])*255),
         transforms.ToTensor()
     ])
 
@@ -99,4 +105,3 @@ if __name__ == '__main__':
         for img in imgs:
             cv2.imshow('l', img)
             cv2.waitKey(0)
-

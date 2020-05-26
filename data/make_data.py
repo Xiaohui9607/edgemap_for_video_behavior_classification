@@ -15,9 +15,9 @@ import argparse
 #     test = test[8:-3].split('\', \'')
 
 DATA_DIR = '../../data/CY101'
-OUT_DIR = '../../data/CY101NPY'
+OUT_DIR = '../../data/CY101EDNPY'
 # added for VIS splits
-VIS_DIR = '../../data/VIS/'
+VIS_DIR = '../../data/EDVIS/'
 
 
 STRATEGY = 'object' # object | category | trial
@@ -198,8 +198,8 @@ def process(visions, chosen_behavior):
             out_behavior_npys = np.zeros(len(CHOOSEN_BEHAVIORS))
             out_behavior_npys[CHOOSEN_BEHAVIORS.index(behavior)] = 1
 
-            for i, (out_vision_npy) in enumerate(zip(
-                    out_vision_npys)):
+            for i, out_vision_npy in enumerate(
+                    out_vision_npys):
                 ret = {
                     'behavior': out_behavior_npys,
                     'vision': out_vision_npy,
@@ -212,8 +212,8 @@ def process(visions, chosen_behavior):
         out_behavior_npys[CHOOSEN_BEHAVIORS.index(behavior)] = 1
 
         # make sure that all the lists are in the same length!
-        for i, out_vision_npy in enumerate(zip(
-                out_vision_npys)):
+        for i, out_vision_npy in enumerate(
+                out_vision_npys):
             ret = {
                 'behavior': out_behavior_npys,
                 'vision': out_vision_npy,
