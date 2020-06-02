@@ -5,7 +5,7 @@ import random
 import numpy as np
 import PIL.Image
 import argparse
-
+from PDBF import graypdbfs
 
 # FIXED = True
 # if FIXED:
@@ -97,12 +97,14 @@ def generate_npy_vision(path, behavior, sequence_length):
     for file in files:
         img = PIL.Image.open(file)
         img = img.resize(IMG_SIZE)
+        img = graypdbfs(img, [3]).astype(np.bool)
         img = np.array(img).transpose([2, 0, 1])[np.newaxis, ...]
         imglist.append(img)
     ret = []
     for i in range(0, len(imglist) - sequence_length, STEP):
         ret.append(np.concatenate(imglist[i:i + sequence_length], axis=0))
     return ret, img_length
+
 
 def split(strategy):
     '''
@@ -125,6 +127,7 @@ def split(strategy):
                     test_list.append(object)
                 else:
                     train_list.append(object)
+
     elif strategy == 'category':
         random.shuffle(CATEGORIES)
         train_list, test_list = CATEGORIES[:16], CATEGORIES[16:]

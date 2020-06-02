@@ -1,7 +1,10 @@
 import numpy as np
 from ctypes import cdll, c_void_p , c_uint32, c_float
 from PIL import Image
-lib = cdll.LoadLibrary('./PDBF/libPDBF.so')
+try:
+    lib = cdll.LoadLibrary('./PDBF/libPDBF.so')
+except:
+    lib = cdll.LoadLibrary('../PDBF/libPDBF.so')
 
 def pdbf(input, nbitplanes, beta, winsize, sigma, kernelsize, use_gaussian):
     use_gaussian = 1 if use_gaussian else 0
@@ -28,7 +31,6 @@ def rgbpdbfs(input, nbitplanes, use_gaussian=False, sigma=1.0, kernelsize=5):
     res = []
     input = np.array(input)
     for nbitplane in nbitplanes:
-
         res.extend([pdbf(input[..., i], nbitplanes=nbitplane, beta=0, winsize=2,
                    sigma=sigma, kernelsize=kernelsize, use_gaussian=use_gaussian) for i in range(3)])
     res = np.stack(res, axis=-1)
@@ -46,3 +48,7 @@ def graypdbfs(input, nbitplanes, use_gaussian=False, sigma=1.0, kernelsize=5):
                    sigma=sigma, kernelsize=kernelsize, use_gaussian=use_gaussian))
     res = np.stack(res, axis=-1)
     return res
+
+if __name__ == '__main__':
+
+    graypdbfs()

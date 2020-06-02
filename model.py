@@ -8,8 +8,6 @@ from network import network
 from data import build_dataloader_CY101
 from torch.nn import functional as F
 
-
-
 class Model():
     def __init__(self, opt):
         self.opt = opt

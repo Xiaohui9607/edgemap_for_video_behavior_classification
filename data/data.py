@@ -68,7 +68,7 @@ def build_dataloader_CY101(opt):
         transforms.Lambda(crop),
         transforms.ToPILImage(),
         transforms.Resize((opt.height, opt.width)),
-        transforms.Lambda(lambda x: graypdbfs(x, nbitplanes=[2,3,4,5])*255),
+        transforms.Lambda(lambda x: graypdbfs(x, nbitplanes=[4])*255),
         transforms.ToTensor()
     ])
 
@@ -90,6 +90,7 @@ def build_dataloader_CY101(opt):
     train_dl = DataLoader(dataset=train_ds, batch_size=opt.batch_size, shuffle=True, drop_last=False)
     valid_dl = DataLoader(dataset=valid_ds, batch_size=opt.batch_size, shuffle=False, drop_last=False)
     return train_dl, valid_dl
+
 
 if __name__ == '__main__':
     from options import Options
