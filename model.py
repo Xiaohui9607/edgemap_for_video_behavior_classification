@@ -14,21 +14,11 @@ class Model():
         self.device = self.opt.device
         train_dataloader, valid_dataloader = build_dataloader_CY101(opt)
         self.dataloader = {'train': train_dataloader, 'valid': valid_dataloader}
-        if not self.opt.use_haptic:
-            self.opt.haptic_layer = 0
-
-        if not self.opt.use_vibro:
-            self.opt.vibro_layer = 0
-
-        if not self.opt.use_audio:
-            self.opt.audio_layer = 0
-
-        if self.opt.baseline:
-            self.net = network(opt=self.opt, channels=opt.channels, height=self.opt.height, width=self.opt.width)
+        self.net = network(opt=self.opt, channels=opt.channels, height=self.opt.height, width=self.opt.width)
 
         self.net.to(self.device)
         self.bce_loss = nn.BCELoss()
-
+        print('# parameters:', sum(param.numel() for param in self.net.parameters()))
         if self.opt.pretrained_model:
             self.load_weight()
         self.optimizer = torch.optim.Adam(self.net.parameters(), self.opt.learning_rate, weight_decay=1e-4)
@@ -45,7 +35,6 @@ class Model():
             loss = self.bce_loss(preds, behaviors)
             loss.backward()
             self.optimizer.step()
-
             if iter_ % self.opt.print_interval == 0:
                 print("training epoch: %3d, iterations: %3d/%3d loss: %6f " %
                       (epoch, iter_, len(self.dataloader['train'].dataset)//self.opt.batch_size, loss))
@@ -53,8 +42,9 @@ class Model():
     def train(self):
         for epoch_i in range(0, self.opt.epochs):
             self.train_epoch(epoch_i)
-            self.evaluate(epoch_i)
-            self.save_weight(epoch_i)
+            if (epoch_i+1) % 5 ==0:
+                self.evaluate(epoch_i)
+                self.save_weight(epoch_i)
 
     def evaluate(self, epoch):
         # loss = 0

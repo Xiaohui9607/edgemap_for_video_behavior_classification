@@ -3,8 +3,9 @@ import torch
 from torchvision import transforms
 from torch.utils.data import DataLoader, Dataset
 import torch.nn.functional as F
+import random
 import numpy as np
-from PDBF import graypdbfs
+from PDBF import graypdbfs, rgbpdbfs
 IMG_EXTENSIONS = ('.npy',)
 
 def make_dataset(path):
@@ -24,13 +25,15 @@ def npy_loader(path):
 
 
 class CY101Dataset(Dataset):
-    def __init__(self, root, image_transform=None, loader=npy_loader, device='cpu'):
+    def __init__(self, root, opt, image_transform=None, loader=npy_loader, device='cpu', train=False):
         if not os.path.exists(root):
             raise FileExistsError('{0} does not exists!'.format(root))
 
         self.image_transform = lambda vision: torch.cat([image_transform(single_image).unsqueeze(0) for single_image in vision.unbind(0)], dim=0)
 
         self.samples = make_dataset(root)
+        if train:
+            self.samples = [sp for sp in self.samples if random.random() < opt.ratio]
         if len(self.samples) == 0:
             raise (RuntimeError("Found 0 images in subfolders of: " + root + "\n"
                                 "Supported image extensions are: " + ",".join(IMG_EXTENSIONS)))
@@ -63,26 +66,36 @@ def build_dataloader_CY101(opt):
         x= np.array(x)
         return x
 
-
-    image_transform = transforms.Compose([
+    train_transform = transforms.Compose([
         transforms.Lambda(crop),
         transforms.ToPILImage(),
         transforms.Resize((opt.height, opt.width)),
-        transforms.Lambda(lambda x: graypdbfs(x, nbitplanes=[4])*255),
+        transforms.Lambda(lambda x: rgbpdbfs(x, nbitplanes=[3])*255 if opt.pdbf else x),
         transforms.ToTensor()
     ])
 
+    valid_transform = transforms.Compose([
+        transforms.Lambda(crop),
+        transforms.ToPILImage(),
+        transforms.Resize((opt.height, opt.width)),
+        # transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+        transforms.Lambda(lambda x: rgbpdbfs(x, nbitplanes=[3])*255 if opt.pdbf else x),
+        transforms.ToTensor()
+    ])
 
     train_ds = CY101Dataset(
         root=os.path.join(opt.data_dir+'/train'),
-        image_transform=image_transform,
+        opt=opt,
+        image_transform=train_transform,
         loader=npy_loader,
-        device=opt.device
+        device=opt.device,
+        train=True
     )
 
     valid_ds = CY101Dataset(
         root=os.path.join(opt.data_dir+'/test'),
-        image_transform=image_transform,
+        opt=opt,
+        image_transform=valid_transform,
         loader=npy_loader,
         device=opt.device
     )
