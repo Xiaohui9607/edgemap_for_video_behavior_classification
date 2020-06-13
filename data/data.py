@@ -72,7 +72,7 @@ def build_dataloader_CY101(opt):
         transforms.Resize((opt.height, opt.width)),
         transforms.Lambda(lambda x: rgbpdbfs(x, nbitplanes=[3], decomp_method=1 if opt.fibo else 0,
                                                                 p_code=2 if opt.fibo else -1,
-                                                                n_code=8 if opt.fibo else -1)*255
+                                                                n_code=16 if opt.fibo else -1)*255
                                                                 if opt.pdbf else x),
         transforms.ToTensor()
     ])
@@ -84,7 +84,7 @@ def build_dataloader_CY101(opt):
         # transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
         transforms.Lambda(lambda x: rgbpdbfs(x, nbitplanes=[3], decomp_method=1 if opt.fibo else 0,
                                              p_code=2 if opt.fibo else -1,
-                                             n_code=8 if opt.fibo else -1)*255
+                                             n_code=16 if opt.fibo else -1)*255
                                              if opt.pdbf else x),
         transforms.ToTensor()
     ])
