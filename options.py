@@ -25,6 +25,11 @@ class Options():
         self.parser.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu', help='cuda:[d] | cpu')
         self.parser.add_argument('--pdbf',  action='store_true', help='pdbf.')
 
+        ### if fibonacci added
+        self.parser.add_argument('--fibo', type=bool, default=0, help='bit_plane 0, fibo 1.')
+        # self.parser.add_argument('--pcode', type=int, default=-1, help='-1 or any integer between 1 and 256')
+        # self.parser.add_argument('--ncode', type=int, default=-1, help='-1 or any integer between 8 and 32 bit')
+
         self.parser.add_argument('--print_interval', type=int, default=20, help='# iterations to output loss')
         self.parser.add_argument('--batch_size', type=int, default=32, help='batch size for training')
         self.parser.add_argument('--learning_rate', type=float, default=0.0005, help='the base learning rate of the generator')
