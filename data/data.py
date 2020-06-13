@@ -70,7 +70,10 @@ def build_dataloader_CY101(opt):
         transforms.Lambda(crop),
         transforms.ToPILImage(),
         transforms.Resize((opt.height, opt.width)),
-        transforms.Lambda(lambda x: rgbpdbfs(x, nbitplanes=[3])*255 if opt.pdbf else x),
+        transforms.Lambda(lambda x: rgbpdbfs(x, nbitplanes=[3], decomp_method=1 if opt.fibo else 0,
+                                                                p_code=2 if opt.fibo else -1,
+                                                                n_code=8 if opt.fibo else -1)*255
+                                                                if opt.pdbf else x),
         transforms.ToTensor()
     ])
 
@@ -79,7 +82,10 @@ def build_dataloader_CY101(opt):
         transforms.ToPILImage(),
         transforms.Resize((opt.height, opt.width)),
         # transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
-        transforms.Lambda(lambda x: rgbpdbfs(x, nbitplanes=[3])*255 if opt.pdbf else x),
+        transforms.Lambda(lambda x: rgbpdbfs(x, nbitplanes=[3], decomp_method=1 if opt.fibo else 0,
+                                             p_code=2 if opt.fibo else -1,
+                                             n_code=8 if opt.fibo else -1)*255
+                                             if opt.pdbf else x),
         transforms.ToTensor()
     ])
 
@@ -99,7 +105,6 @@ def build_dataloader_CY101(opt):
         loader=npy_loader,
         device=opt.device
     )
-
     train_dl = DataLoader(dataset=train_ds, batch_size=opt.batch_size, shuffle=True, drop_last=False)
     valid_dl = DataLoader(dataset=valid_ds, batch_size=opt.batch_size, shuffle=False, drop_last=False)
     return train_dl, valid_dl
