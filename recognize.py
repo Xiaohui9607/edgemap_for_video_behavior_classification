@@ -34,10 +34,7 @@ def load_dataset(path):
 if __name__=='__main__':
 
     desc = LocalBinaryPatterns(40, 20)
-    hist_train_list = []
-    hist_train_labels_list= []
-    hist_test_list = []
-    hist_test_labels_list = []
+    hist_train_list, hist_train_labels_list, hist_test_list, hist_test_labels_list = [], [], [], []
 
     x_train, y_train, x_test, y_test = load_dataset("/Users/ramtin/PycharmProjects/data/CY101")
 
