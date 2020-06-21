@@ -1,7 +1,7 @@
-from skimage import feature
+from skimage import feature, color, io
 import numpy as np
+from PDBF import rgbpdbfs
 import cv2
-
 
 class LocalBinaryPatterns:
     def __init__(self, numPoints, radius):
@@ -9,10 +9,16 @@ class LocalBinaryPatterns:
         self.numPoints = numPoints
         self.radius = radius
 
-    def describe(self, image, eps=1e-7):
+    def describe(self, image, eps=1e-7, flag='normal'): #flag: either normal or PDBF
         # compute the Local Binary Pattern representation
         # of the image, and then use the LBP representation
         # to build the histogram of patterns
+
+        image=io.imread(image)
+        if flag=='PDBF':
+            image = rgbpdbfs(image, nbitplanes=[3], decomp_method=0, p_code=-1, n_code=-1) * 255
+
+        image = color.rgb2gray(image)
         lbp = feature.local_binary_pattern(image, self.numPoints,
                                            self.radius, method="uniform")
         (hist, _) = np.histogram(lbp.ravel(),
@@ -24,13 +30,10 @@ class LocalBinaryPatterns:
         return hist
 
 
-
-
 if __name__=='__main__':
+
     from PIL import Image
-    img = Image.open('../ramtin.jpg').convert('LA')
-    print(img)
-    # img.save('greyscale.png')
+    img = '../ramtin.jpg'
 
     sample = LocalBinaryPatterns(numPoints=10, radius=20)
     hist = sample.describe(image= img)
