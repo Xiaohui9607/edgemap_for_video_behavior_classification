@@ -8,10 +8,10 @@ from skimage.feature import local_binary_pattern
 from scipy.stats import itemfreq
 from PDBF import pdbf
 
-# from keras.models import Sequential
-# from keras.layers import Dense
-# from keras.layers import LSTM
-# from keras.layers import Dropout
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import LSTM
+from keras.layers import Dropout
 
 import pickle
 
@@ -101,25 +101,17 @@ def preprocess_hist(desc_sequences, km):
 
 
 if __name__ == '__main__':
-    # opt = Options().parse()
-    # opt.baseline = True
-    # from keras.datasets import imdb
-
     create_dataset("/home/golf/code/data/CY101")
     # x_train, y_train, x_test, y_test = load_dataset("/home/golf/code/edgemap_for_video_behavior_classification/pkledge")
     #
-    # # desc_list = sum(x_train, [])
     # max_len = max([len(elem) for elem in x_train])
     # import keras
-    # # x_train = [np.array(elem+[np.zeros(122) for _ in range(max_len-len(elem))]) for elem in x_train]
     # x_train = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=max_len, dtype='float32')
     # x_test = keras.preprocessing.sequence.pad_sequences(x_test, maxlen=max_len, dtype='float32')
-    # # x_train = np.stack(x_train)
+
     # model = Sequential()
     #
     # model.add(LSTM(32, input_shape=(max_len, 122)))
-    # # model.add(Dense(1))
-    # # model.add(Dropout(0.2))
     # model.add(Dense(len(BEHAVIORS), activation='softmax'))
     # model.compile(loss='sparse_categorical_crossentropy', optimizer='adam',metrics=[keras.metrics.SparseCategoricalAccuracy()])
     # model.fit(x_train, y_train, epochs=20, batch_size=32, verbose=1)
