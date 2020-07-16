@@ -1,13 +1,15 @@
-import cv2
+# import cv2
 import glob
 import os
 import random
 from options import Options
 import numpy as np
-from skimage.feature import local_binary_pattern
+# from skimage.feature import local_binary_pattern
 from scipy.stats import itemfreq
-from PDBF import pdbf
-
+# from PDBF import pdbf
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"] = ""
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
@@ -71,7 +73,7 @@ def load_dataset(path):
     for sample in samples:
         behavior = [b for b in BEHAVIORS if b in sample][0]
         f = pickle.load(open(sample, 'rb'))
-        f = [np.pad(elem, (0,122-elem.shape[0]),'constant', constant_values=0) for elem in f]
+        f = [np.pad(elem, (0, 122-elem.shape[0]),'constant', constant_values=0) for elem in f]
         if len(f) ==0:
             print(sample)
         if random.random()<0.2:
@@ -101,22 +103,43 @@ def preprocess_hist(desc_sequences, km):
 
 
 if __name__ == '__main__':
-    create_dataset("/home/golf/code/data/CY101")
-    # x_train, y_train, x_test, y_test = load_dataset("/home/golf/code/edgemap_for_video_behavior_classification/pkledge")
-    #
-    # max_len = max([len(elem) for elem in x_train])
-    # import keras
-    # x_train = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=max_len, dtype='float32')
-    # x_test = keras.preprocessing.sequence.pad_sequences(x_test, maxlen=max_len, dtype='float32')
+    # opt = Options().parse()
+    # opt.baseline = True
+    # from keras.datasets import imdb
 
-    # model = Sequential()
+    # create_dataset("/home/golf/code/data/CY101")
+    x_train, y_train, x_test, y_test = load_dataset("/home/golf/code/edgemap_for_video_behavior_classification/pkl")
     #
-    # model.add(LSTM(32, input_shape=(max_len, 122)))
-    # model.add(Dense(len(BEHAVIORS), activation='softmax'))
-    # model.compile(loss='sparse_categorical_crossentropy', optimizer='adam',metrics=[keras.metrics.SparseCategoricalAccuracy()])
-    # model.fit(x_train, y_train, epochs=20, batch_size=32, verbose=1)
-    # scores = model.evaluate(x_train, y_train,verbose=0)
+    # desc_list = sum(x_train, [])
+    max_len = max([len(elem) for elem in x_train])
+    pass
+    import keras
+    # x_train = [np.array(elem+[np.zeros(122) for _ in range(max_len-len(elem))]) for elem in x_train]
+    x_train = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=max_len, dtype='float32')
+    x_test = keras.preprocessing.sequence.pad_sequences(x_test, maxlen=max_len, dtype='float32')
+    # x_train = np.stack(x_train)
+    model = Sequential()
+
+    model.add(LSTM(32, input_shape=(max_len, 122)))
+    # model.add(Dense(1))
+    # model.add(Dropout(0.2))
+    model.add(Dense(len(BEHAVIORS), activation='softmax'))
+    model.compile(loss='sparse_categorical_crossentropy', optimizer='adam',metrics=[keras.metrics.SparseCategoricalAccuracy()])
+    model.fit(x_train, y_train, epochs=20, batch_size=32, verbose=1)
+    scores = model.evaluate(x_train, y_train,verbose=0)
+    print('Accuracy on test data: {}% \n Error on test data: {}'.format(scores[1], 1 - scores[1]))
+    print(x_test.shape)
+    import time
+    sumtime = 0
+
+    for i in range(100):
+        st = time.time()
+        model.predict(x_test[0:1])
+        # scores = model.evaluate(x_test, y_test,verbose=0)
+        # print('Accuracy on test data: {}% \n Error on test data: {}'.format(scores[1], 1 - scores[1]))
+        ed = time.time()
+        sumtime += ed-st
+    print(sumtime/100)
+
     # print('Accuracy on test data: {}% \n Error on test data: {}'.format(scores[1], 1 - scores[1]))
-    # scores = model.evaluate(x_test, y_test,verbose=0)
-    # print('Accuracy on test data: {}% \n Error on test data: {}'.format(scores[1], 1 - scores[1]))
-    # pass
+    pass
