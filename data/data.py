@@ -29,7 +29,7 @@ class CY101Dataset(Dataset):
         if not os.path.exists(root):
             raise FileExistsError('{0} does not exists!'.format(root))
 
-        self.image_transform = lambda vision: torch.cat([image_transform(single_image).unsqueeze(0) for single_image in vision.unbind(0)], dim=0)
+        self.image_transform = lambda vision: torch.cat([image_transform(single_image.float()).unsqueeze(0)for single_image in vision.unbind(0)], dim=0)
 
         self.samples = make_dataset(root)
         if train:

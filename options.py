@@ -14,21 +14,18 @@ class Options():
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-        self.parser.add_argument('--data_dir', default='../data/CY101NPY', help='directory containing data.')
-        self.parser.add_argument('--channels', type=int, default=3, help='# channel of input')
+        self.parser.add_argument('--data_dir', default='../data/CY101EDNPY', help='directory containing data.')
+        self.parser.add_argument('--channels', type=int, default=1, help='# channel of input')
         self.parser.add_argument('--height', type=int, default=64, help='height of image')
         self.parser.add_argument('--width', type=int, default=64, help='width of image')
         self.parser.add_argument('--output_dir', default='weight', help='directory for model weight.')
         self.parser.add_argument('--pretrained_model', default='', help='filepath of a pretrained model to initialize from.')
         self.parser.add_argument('--sequence_length', type=int, default=10, help='sequence length, including context frames.')
-        # self.parser.add_argument('--model', default='CDNA', help='model architecture to use - CDNA, DNA, or STP')
         self.parser.add_argument('--device', default='cuda' if torch.cuda.is_available() else 'cpu', help='cuda:[d] | cpu')
         self.parser.add_argument('--pdbf',  action='store_true', help='pdbf.')
 
         ### if fibonacci added
         self.parser.add_argument('--fibo', type=bool, default=0, help='bit_plane 0, fibo 1.')
-        # self.parser.add_argument('--pcode', type=int, default=-1, help='-1 or any integer between 1 and 256')
-        # self.parser.add_argument('--ncode', type=int, default=-1, help='-1 or any integer between 8 and 32 bit')
 
         self.parser.add_argument('--print_interval', type=int, default=20, help='# iterations to output loss')
         self.parser.add_argument('--batch_size', type=int, default=32, help='batch size for training')

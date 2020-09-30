@@ -57,19 +57,9 @@ class network(nn.Module):
         # N * 32 * H/4 * W/4 -> N * 64 * H/4 * W/4
         self.lstm3 = ConvLSTM(in_channels=lstm_size[1], out_channels=lstm_size[2], kernel_size=5, padding=2)
         self.lstm3_norm = nn.LayerNorm([lstm_size[2], self.height//4, self.width//4])
-        # N * 64 * H/4 * W/4 -> N * 64 * H/4 * W/4
-        # self.lstm4 = ConvLSTM(in_channels=lstm_size[2], out_channels=lstm_size[3], kernel_size=5, padding=2)
-        # self.lstm4_norm = nn.LayerNorm([lstm_size[3], self.height//4, self.width//4])
-        # pass in state and action
         #
-        # # N * 64 * H/4 * W/4 -> N * 64 * H/8 * W/8
         self.enc2 = nn.Conv2d(in_channels=lstm_size[2], out_channels=lstm_size[2], kernel_size=3, stride=2, padding=1)
         #
-        # # N * (10+64) * H/8 * W/8 -> N * 64 * H/8 * W/8
-        # self.enc3 = nn.Conv2d(in_channels=lstm_size[3], out_channels=lstm_size[3], kernel_size=1, stride=1)
-        # # N * 64 * H/8 * W/8 -> N * 128 * H/8 * W/8
-        # self.lstm5 = ConvLSTM(in_channels=lstm_size[3], out_channels=lstm_size[4], kernel_size=5, padding=2)
-        # self.lstm5_norm = nn.LayerNorm([lstm_size[4], self.height//8, self.width//8])
         in_dim = int(lstm_size[2] * self.height * self.width // 16)
         self.feat = nn.Linear(8*8*8, 100)
         self.classifer = nn.Linear(100, 9)
@@ -98,15 +88,7 @@ class network(nn.Module):
             lstm3, lstm_state3 = self.lstm3(enc1, lstm_state3)
             lstm3 = self.lstm3_norm(lstm3)
 
-            # lstm4, lstm_state4 = self.lstm4(lstm3, lstm_state4)
-            # lstm4 = self.lstm4_norm(lstm4)
-            #
             enc2 = torch.relu(self.enc2(lstm3))
-            #
-            # enc3 = torch.relu(self.enc3(enc2))
-            #
-            # lstm5, lstm_state5 = self.lstm5(enc3, lstm_state5)
-            # lstm5 = self.lstm5_norm(lstm5)
 
         feats = enc2.view(enc2.shape[0], -1)
         feats = self.feat(feats)

@@ -2,7 +2,7 @@ import numpy as np
 from ctypes import cdll, c_void_p , c_uint32, c_float
 from PIL import Image
 try:
-    lib = cdll.LoadLibrary('./PDBF/libPDBF.dylib')
+    lib = cdll.LoadLibrary('./PDBF/libPDBF.so')
 except:
     lib = cdll.LoadLibrary('../PDBF/libPDBF.dylib')
 
@@ -20,10 +20,10 @@ def pdbf(input, nbitplanes, beta, winsize, sigma, kernelsize, use_gaussian, deco
         c_float(sigma),  # sigma (smoothing)
         c_uint32(kernelsize),  # kernel size (smoothing)
         c_uint32(use_gaussian),  # use/not use gaussian
-        c_uint32(decomp_method),
+        c_void_p(res.ctypes.data),
         c_uint32(p_code),
         c_uint32(n_code),
-        c_void_p(res.ctypes.data)
+        c_uint32(decomp_method),
     )
     return res
 
