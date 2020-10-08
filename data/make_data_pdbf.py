@@ -4,6 +4,8 @@ import random
 import numpy as np
 import PIL.Image
 import argparse
+from PDBF import graypdbfs
+
 # FIXED = True
 # if FIXED:
 #     train_test_split = '/home/golf/code/models/Experiement_object_based_all_behaviors/None/train_test_split'
@@ -94,6 +96,7 @@ def generate_npy_vision(path, behavior, sequence_length):
     for file in files:
         img = PIL.Image.open(file)
         img = img.resize(IMG_SIZE)
+        img = graypdbfs(img, [3]).astype(np.bool)
         img = np.array(img).transpose([2, 0, 1])[np.newaxis, ...]
         imglist.append(img)
     ret = []
