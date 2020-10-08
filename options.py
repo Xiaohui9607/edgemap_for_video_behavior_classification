@@ -30,7 +30,7 @@ class Options():
         self.parser.add_argument('--print_interval', type=int, default=20, help='# iterations to output loss')
         self.parser.add_argument('--batch_size', type=int, default=32, help='batch size for training')
         self.parser.add_argument('--learning_rate', type=float, default=0.0005, help='the base learning rate of the generator')
-        self.parser.add_argument('--ratio', type=float, default=1.0, help='the base learning rate of the generator')
+        self.parser.add_argument('--ratio', type=float, default=0.5, help='the base learning rate of the generator')
         self.parser.add_argument('--epochs', type=int, default=30, help='# total training epoch')
         self.opt = None
 

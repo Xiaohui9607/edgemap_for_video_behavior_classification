@@ -2,10 +2,9 @@ import os
 import torch
 from torchvision import transforms
 from torch.utils.data import DataLoader, Dataset
-import torch.nn.functional as F
 import random
 import numpy as np
-from PDBF import graypdbfs, rgbpdbfs
+from data.PDBF import rgbpdbfs
 IMG_EXTENSIONS = ('.npy',)
 
 def make_dataset(path):

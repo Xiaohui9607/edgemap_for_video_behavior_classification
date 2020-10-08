@@ -42,14 +42,14 @@ class Model():
     def train(self):
         for epoch_i in range(0, self.opt.epochs):
             self.train_epoch(epoch_i)
-            if (epoch_i+1) % 5 ==0:
-                self.evaluate(epoch_i)
-                self.save_weight(epoch_i)
+            self.evaluate(epoch_i)
+            self.save_weight(epoch_i)
 
     def evaluate(self, epoch):
         # loss = 0
         correct = 0
         total = 0
+
         with torch.no_grad():
             for iter_, (images, behaviors) in enumerate(self.dataloader['valid']):
                 self.net.zero_grad()

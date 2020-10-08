@@ -2,9 +2,9 @@ import numpy as np
 from ctypes import cdll, c_void_p , c_uint32, c_float
 from PIL import Image
 try:
-    lib = cdll.LoadLibrary('./PDBF/libPDBF.so')
+    lib = cdll.LoadLibrary('./data/PDBF/libPDBF.so')
 except:
-    lib = cdll.LoadLibrary('../PDBF/libPDBF.dylib')
+    lib = cdll.LoadLibrary('../data/PDBF/libPDBF.dylib')
 
 def pdbf(input, nbitplanes, beta, winsize, sigma, kernelsize, use_gaussian, decomp_method=0, p_code=-1, n_code=-1):
     use_gaussian = 1 if use_gaussian else 0

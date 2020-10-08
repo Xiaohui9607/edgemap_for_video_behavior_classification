@@ -1,4 +1,3 @@
-import re
 import os
 import glob
 import random
@@ -14,10 +13,10 @@ from PDBF import graypdbfs
 #     train = train[9:-3].split('\', \'')
 #     test = test[8:-3].split('\', \'')
 
-DATA_DIR = '../../data/CY101'
-OUT_DIR = '../../data/CY101EDNPY'
+DATA_DIR = '../data/CY101'
+OUT_DIR = '../data/CY101EDNPY'
 # added for VIS splits
-VIS_DIR = '../../data/EDVIS/'
+VIS_DIR = '../data/EDVIS/'
 
 
 STRATEGY = 'object' # object | category | trial
@@ -108,7 +107,6 @@ def generate_npy_vision(path, behavior, sequence_length):
 
 def split(strategy):
     '''
-
     :param strategy: object | category | trail
     :return: train -> list
              test -> list
