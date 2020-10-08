@@ -40,10 +40,12 @@ class Model():
                       (epoch, iter_, len(self.dataloader['train'].dataset)//self.opt.batch_size, loss))
 
     def train(self):
+        interval = self.opt.epochs // 5
         for epoch_i in range(0, self.opt.epochs):
             self.train_epoch(epoch_i)
-            self.evaluate(epoch_i)
-            self.save_weight(epoch_i)
+            if epoch_i % interval == 0:
+                self.evaluate(epoch_i)
+                self.save_weight(epoch_i)
 
     def evaluate(self, epoch):
         # loss = 0
