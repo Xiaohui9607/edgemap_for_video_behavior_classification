@@ -14,7 +14,7 @@ from PDBF import graypdbfs
 #     test = test[8:-3].split('\', \'')
 
 DATA_DIR = '../data/CY101'
-OUT_DIR = '../data/CY101NPY'
+OUT_DIR = '../data/CY101EDNPY'
 # added for VIS splits
 VIS_DIR = '../data/EDVIS/'
 
@@ -96,7 +96,7 @@ def generate_npy_vision(path, behavior, sequence_length):
     for file in files:
         img = PIL.Image.open(file)
         img = img.resize(IMG_SIZE)
-        img = graypdbfs(img, [3]).astype(np.bool)
+        img = graypdbfs(img, [6], decomp_method=1,p_code=3, n_code=11).astype(np.bool)
         img = np.array(img).transpose([2, 0, 1])[np.newaxis, ...]
         imglist.append(img)
     ret = []
